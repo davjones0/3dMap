@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import * as THREE from 'three'
+import geoTrans from './d3-threeD'
 
 export default function (data) {
 	//keep track of rendered obj
@@ -13,20 +14,28 @@ export default function (data) {
 
 	//keep track of max and min of total values
 	let maxValueTotal = 0;
-	let minValueTotal = 0;
+	let minValueTotal = -1;
 
 	//convert to mesh and calculate values
 	for (let i = 0; i < data.features.length; i++) {
 		let geoFeature = data.features[i]
 		let feature = geo.path(geoFeature);
 		//conver to three.js path
-		let mesh = transformSVGPathExposed(feature);
+		let mesh = geoTrans.transformSVGPathExposed(feature);
 		meshes.push(mesh);
 
 		//get property from json obj to use for color
-		
+		let value = parseFloat(geoFeature.properties.annavg41_field_4);
+		if (value > maxValueAverage) maxValueAverage = value;
+		if (value < minValueAverage || minValueAverage == -1) minValueAverage = value;
+		averageValues.push(value);
+
 		//and get the max values to determine height later
-		
+		value = parseFloat(geoFeature.properties.annavg41_field_7);
+		if(value > maxValueTotal) maxValueTotal = value;
+		if(value < minValueTotal || minValueTotal == -1) minValueTotal = value;
+
+		totalValues.push(value);
 	}
 
 
@@ -41,7 +50,7 @@ export default function (data) {
 		});
 
 		//create extrude based on total
-		let extrude = ((totalValues[] - minValueTotal) / (maxValueAverage - minvalueAverage)) * 225;
+		let extrude = ((totalValues[i] - minValueTotal) / (maxValueAverage - minvalueAverage)) * 225;
 		let shape3d = meshes[i].extrude({amount: Math.round(extrude), bevelEnabled: false});
 		//create a mesh based on material and extruded shape
 		let toAdd = new THREE.Mesh(shape3d, material);

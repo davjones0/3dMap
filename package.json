@@ -27,6 +27,7 @@
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
+    "json-loader": "^0.5.4",
     "three": "^0.85.2"
   },
   "dependencies": {
