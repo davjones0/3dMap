@@ -1,10 +1,11 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+import * as d3 from 'd3'
+import * as THREE from 'three'
+export let transformSVGPathExposed;
 
- let transformSVGPathExposed;
-
-function d3threeD(exports) {
+export function d3threeD(exports) {
 
 const DEGS_TO_RADS = Math.PI / 180,
       UNIT_SIZE = 100;

@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import * as THREE from 'three'
-import geoTrans from './d3-threeD'
+import {d3threeD, transformSVGPathExposed} from './d3-threeD'
 
 export default function (data) {
 	//keep track of rendered obj
@@ -21,7 +21,10 @@ export default function (data) {
 		let geoFeature = data.features[i]
 		let feature = geo.path(geoFeature);
 		//conver to three.js path
-		let mesh = geoTrans.transformSVGPathExposed(feature);
+		
+		d3threeD.transformSVGPathExposed(feature);
+		let mesh = d3threeD.transformSVGPathExposed;
+		alert(mesh);
 		meshes.push(mesh);
 
 		//get property from json obj to use for color

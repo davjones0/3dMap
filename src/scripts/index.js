@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 import scene from './components/scene'
 import * as THREE from "three"
 import {us} from '../data/LaborStates'
-import geoObject from './components/geoObject'
+//import geoObject from './components/geoObject'
 
 //const HELLO_WORLD = new Welcome('Hello from FrontBook!')
 scene();
