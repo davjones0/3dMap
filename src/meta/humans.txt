@@ -1,7 +1,0 @@
-/* TEAM */
-Name: <name>
-Site: <email>
-
-/* SITE */
-Last update: YYYY/MM/DD
-Components: <dependencies>
