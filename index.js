@@ -5,8 +5,8 @@ const $ = require('jquery')
 const THREE = require('three')
 
 $(function() {
-    var worldMap;
-    var mouse = { x: 0, y: 0 }
+    let worldMap;
+    let mouse = { x: 0, y: 0 }
 
     function Map() {
 
@@ -29,7 +29,7 @@ $(function() {
         this.projector = {};
         this.camera = {};
         this.stage = {};
-        var path;
+        let path;
 
         this.INTERSECTED = null;
     }
@@ -43,7 +43,7 @@ $(function() {
                 this.mercator = d3.geoEquirectangular();
                 path = d3.geoPath().projection(this.mercator);
 
-                var translate = this.mercator.translate();
+                let translate = this.mercator.translate();
                 translate[0] = 500;
                 translate[1] = 0;
 
@@ -84,7 +84,7 @@ $(function() {
 
 
         add_light: function(x, y, z, intensity, color) {
-            var pointLight = new THREE.PointLight(color);
+            let pointLight = new THREE.PointLight(color);
             pointLight.position.x = x;
             pointLight.position.y = y;
             pointLight.position.z = z;
@@ -93,9 +93,9 @@ $(function() {
         },
 
         add_plain: function(x, y, z, color) {
-            var planeGeo = new THREE.CubeGeometry(x, y, z);
-            var planeMat = new THREE.MeshLambertMaterial({ color: color });
-            var plane = new THREE.Mesh(planeGeo, planeMat);
+            let planeGeo = new THREE.CubeGeometry(x, y, z);
+            let planeMat = new THREE.MeshLambertMaterial({ color: color });
+            let plane = new THREE.Mesh(planeGeo, planeMat);
 
             // rotate it to correct position
             plane.rotation.x = -Math.PI / 2;
@@ -104,17 +104,17 @@ $(function() {
 
         add_countries: function(data) {
 
-            var countries = [];
-            var i, j;
+            let countries = [];
+            let i, j;
 
             // convert to threejs meshes
             for (i = 0; i < data.features.length; i++) {
-                var geoFeature = data.features[i];
-                var properties = geoFeature.properties;
-                var feature = path(geoFeature);
+                let geoFeature = data.features[i];
+                let properties = geoFeature.properties;
+                let feature = path(geoFeature);
 
                 // we only need to convert it to a three.js path
-                var mesh = transformSVGPathExposed(feature);
+                let mesh = transformSVGPathExposed(feature);
 
                 // add to array
                 for (j = 0; j < mesh.length; j++) {
@@ -126,25 +126,25 @@ $(function() {
             for (i = 0; i < countries.length; i++) {
 
                 // create material color based on average		
-                var material = new THREE.MeshPhongMaterial({
+                let material = new THREE.MeshPhongMaterial({
                     color: this.getCountryColor(countries[i].data),
                     opacity: 0.5
                 });
 
                 // extrude mesh
-                var shape3d = countries[i].mesh.extrude({
+                let shape3d = countries[i].mesh.extrude({
                     amount: 4,
                     bevelEnabled: false
                 });
-                // var extrudeSettings = {
+                // let extrudeSettings = {
                 //     amount: 14,
                 //     bevelEnabled: false
                 // };
 
-                // var shape3d = new THREE.ExtrudeGeometry(countries[i].mesh, extrudeSettings);
+                // let shape3d = new THREE.ExtrudeGeometry(countries[i].mesh, extrudeSettings);
 
                 // create a mesh based on material and extruded shape
-                var toAdd = new THREE.Mesh(shape3d, material);
+                let toAdd = new THREE.Mesh(shape3d, material);
 
                 //set name of mesh
                 toAdd.name = countries[i].data.name;
@@ -161,7 +161,7 @@ $(function() {
         },
 
         getCountryColor: function(data) {
-            //var multiplier = 0;
+            //let multiplier = 0;
 
             //for(i = 0; i < 3; i++) {
             //	multiplier += data.iso_a3.charCodeAt(i);
@@ -181,10 +181,10 @@ $(function() {
         },
 
         moveCamera: function() {
-            var speed = 0.2;
-            var target_x = (this.CAMERA_X - this.camera.position.x) * speed;
-            var target_y = (this.CAMERA_Y - this.camera.position.y) * speed;
-            var target_z = (this.CAMERA_Z - this.camera.position.z) * speed;
+            let speed = 0.2;
+            let target_x = (this.CAMERA_X - this.camera.position.x) * speed;
+            let target_y = (this.CAMERA_Y - this.camera.position.y) * speed;
+            let target_z = (this.CAMERA_Z - this.camera.position.z) * speed;
 
             this.camera.position.x += target_x;
             this.camera.position.y += target_y;
@@ -202,12 +202,12 @@ $(function() {
             }
 
             // find intersections
-            var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+            let vector = new THREE.Vector3(mouse.x, mouse.y, 1);
             this.projector.unprojectVector(vector, this.camera);
-            var raycaster = new THREE.Raycaster(this.camera.position, vector.subSelf(this.camera.position).normalize());
-            var intersects = raycaster.intersectObjects(this.scene.children);
+            let raycaster = new THREE.Raycaster(this.camera.position, vector.subSelf(this.camera.position).normalize());
+            let intersects = raycaster.intersectObjects(this.scene.children);
 
-            var objects = this.scene.children;
+            let objects = this.scene.children;
 
             if (intersects.length > 1) {
                 if (this.INTERSECTED != intersects[0].object) {
@@ -250,7 +250,7 @@ $(function() {
         }
     };
 
-    function init() {
+    let init = () => {
 
         $.when($.getJSON("./data/labor.json")).then(function(data) {
 
@@ -265,9 +265,9 @@ $(function() {
             worldMap.add_countries(data);
 
             // request animation frame
-            var onFrame = window.requestAnimationFrame;
+            let onFrame = window.requestAnimationFrame;
 
-            function tick(timestamp) {
+            let tick = (timestamp) => {
                 worldMap.animate();
 
                 if (worldMap.INTERSECTED) {
@@ -287,7 +287,7 @@ $(function() {
         });
     }
 
-    function onDocumentMouseMove(event) {
+    let onDocumentMouseMove = (event) => {
 
         event.preventDefault();
 
@@ -295,7 +295,7 @@ $(function() {
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
-    function onWindowResize() {
+    let onWindowResize = () => {
 
         windowHalfX = window.innerWidth / 2;
         windowHalfY = window.innerHeight / 2;
@@ -306,7 +306,7 @@ $(function() {
         worldMap.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    $('.navbar-fixed-top ul li a').click(function() {
+    $('.navbar-fixed-top ul li a').click(() => {
         /*switch (this.hash) {
            case "#africa":
         	  worldMap.setCameraPosition(100, 320, 200, 100, 50);
