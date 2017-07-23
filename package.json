@@ -1,0 +1,20 @@
+{
+  "name": "3dmap",
+  "version": "1.0.0",
+  "description": "mapping demo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davjones0/3dMap.git"
+  },
+  "author": "DJ",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davjones0/3dMap/issues"
+  },
+  "homepage": "https://github.com/davjones0/3dMap#readme"
+}
