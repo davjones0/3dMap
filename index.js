@@ -6,21 +6,21 @@ const THREE = require('three')
 
 $(function() {
     let worldMap;
-    let mouse = { x: 0, y: 0 }
+    let mouse = { x: -100, y: -100 }
 
     function Map() {
 
         this.WIDTH = window.innerWidth;
         this.HEIGHT = window.innerHeight;
 
-        this.VIEW_ANGLE = 45;
+        this.VIEW_ANGLE = 15;
         this.NEAR = 0.1;
         this.FAR = 10000;
-        this.CAMERA_X = 0.1;
-        this.CAMERA_Y = 1000;
-        this.CAMERA_Z = 500;
-        this.CAMERA_LX = 0;
-        this.CAMERA_LY = 0;
+        this.CAMERA_X = 180;
+        this.CAMERA_Y = 550;
+        this.CAMERA_Z = 550;
+        this.CAMERA_LX = -230;
+        this.CAMERA_LY = 100;
         this.CAMERA_LZ = 0;
 
         this.geo;
@@ -78,7 +78,7 @@ $(function() {
             this.camera.position.x = this.CAMERA_X;
             this.camera.position.y = this.CAMERA_Y;
             this.camera.position.z = this.CAMERA_Z;
-            this.camera.lookAt({ x: this.CAMERA_LX, y: 0, z: this.CAMERA_LZ });
+            this.camera.lookAt({ x: this.CAMERA_LX, y: this.CAMERA_LY, z: this.CAMERA_LZ });
             this.scene.add(this.camera);
         },
 
@@ -103,6 +103,9 @@ $(function() {
         },
 
         add_countries: function(data) {
+            let extrude;
+            let min = 0;
+            let max = -1;
 
             let countries = [];
             let i, j;
@@ -118,10 +121,14 @@ $(function() {
 
                 // add to array
                 for (j = 0; j < mesh.length; j++) {
+                    // and we get the max values to determine height later on.
+                    let value = properties.annavg41_field_7;
+                    if (value > max) max = value;
+                    if (value < min || min == -1) min = value;
+
                     countries.push({ "data": properties, "mesh": mesh[j] });
                 }
             }
-
             // extrude paths and add color
             for (i = 0; i < countries.length; i++) {
 
@@ -130,10 +137,14 @@ $(function() {
                     color: this.getCountryColor(countries[i].data),
                     opacity: 0.5
                 });
-
-                // extrude mesh
+                console.log(countries[i].data.annavg41_field_7)
+                    // extrude mesh
+                extrude = ((countries[i].data.annavg41_field_7 - min) - (max - min)) * 100;
                 let shape3d = countries[i].mesh.extrude({
-                    amount: 4,
+                    amount: countries[i].data.annavg41_field_7,
+                    //steps: 1,
+                    //material: 0,
+                    //extrudeMaterial: 1,
                     bevelEnabled: false
                 });
                 // let extrudeSettings = {
@@ -153,7 +164,7 @@ $(function() {
                 toAdd.rotation.x = Math.PI / 2;
                 toAdd.translateX(-490);
                 toAdd.translateZ(50);
-                toAdd.translateY(20);
+                toAdd.translateY(countries[i].data.annavg41_field_7 / 2);
 
                 // add to scene
                 this.scene.add(toAdd);
@@ -161,15 +172,15 @@ $(function() {
         },
 
         getCountryColor: function(data) {
-            //let multiplier = 0;
+            let multiplier = 0;
 
-            //for(i = 0; i < 3; i++) {
-            //	multiplier += data.iso_a3.charCodeAt(i);
+            //for (i = 0; i < 3; i++) {
+            multiplier = data.annavg41_field_10;
             //}
 
-            //multiplier = (1.0/366)*multiplier;
-            //return multiplier*0xffffff;
-            return 0xff0000;
+            multiplier = (1.0 / 366) * multiplier;
+            return multiplier * 0xffffff;
+            //return 0xff0000;
         },
 
         setCameraPosition: function(x, y, z, lx, lz) {
@@ -208,7 +219,7 @@ $(function() {
             let intersects = raycaster.intersectObjects(this.scene.children);
 
             let objects = this.scene.children;
-
+            console.log(objects.length);
             if (intersects.length > 1) {
                 if (this.INTERSECTED != intersects[0].object) {
                     if (this.INTERSECTED) {
@@ -252,7 +263,7 @@ $(function() {
 
     let init = () => {
 
-        $.when($.getJSON("./data/labor.json")).then(function(data) {
+        $.when($.getJSON("./data/mapgeo.json")).then(function(data) {
 
             worldMap = new Map();
 
@@ -260,7 +271,7 @@ $(function() {
             worldMap.init_tree();
 
             worldMap.add_light(0, 3000, 0, 1.0, 0xFFFFFF);
-            worldMap.add_plain(1400, 700, 30, 0xEEEEEE);
+            // worldMap.add_plain(1400, 700, 30, 0xEEEEEE);
 
             worldMap.add_countries(data);
 
@@ -281,7 +292,7 @@ $(function() {
 
             onFrame(tick);
 
-            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            //document.addEventListener('mousemove', onDocumentMouseMove, false);
             window.addEventListener('resize', onWindowResize, false);
 
         });
